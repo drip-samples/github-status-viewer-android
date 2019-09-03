@@ -17,7 +17,8 @@ class MainActivity : AppCompatActivity() {
 
         model.getIsUpdating().observe(this, Observer {
             buttonUpdate.text = if (it) "Updateing..." else "Update"
-            val color = ContextCompat.getColor(this, if (it) R.color.darkGray else R.color.blue)
+            val colorCode = if (it) R.color.darkGray else R.color.blue
+            val color = ContextCompat.getColor(this, colorCode)
             buttonUpdate.setBackgroundColor(color)
             buttonUpdate.isEnabled = !it
         })

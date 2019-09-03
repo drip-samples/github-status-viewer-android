@@ -18,6 +18,7 @@ class MainViewModel : ViewModel() {
     private val lastUpdated: MutableLiveData<String> = MutableLiveData()
     private val handler = Handler()
     private val dateFormatter = SimpleDateFormat("yyyy/MM/dd HH:mm:ss")
+    private val apiUrl = "https://kctbh9vrtdwd.statuspage.io/api/v2/status.json"
 
     fun getIsUpdating(): LiveData<Boolean> {
         return isUpdateing
@@ -44,7 +45,7 @@ class MainViewModel : ViewModel() {
         isUpdateing.value = true
         val client = OkHttpClient()
         val request = Request.Builder()
-            .url("https://kctbh9vrtdwd.statuspage.io/api/v2/status.json")
+            .url(apiUrl)
             .build()
         client.newCall(request).enqueue(object : Callback {
             override fun onResponse(call: Call, response: Response) {
@@ -62,7 +63,8 @@ class MainViewModel : ViewModel() {
                 val json = JSONObject(it.string())
                 val status = json.getJSONObject("status")
                 statusText.value = status.getString("description")
-                statusColorCode.value = getColorCodeByIndicator(status.getString("indicator"))
+                val colorCode = getColorCodeByIndicator(status.getString("indicator"))
+                statusColorCode.value = colorCode
             }?:run {
                 setFailureValues()
             }
